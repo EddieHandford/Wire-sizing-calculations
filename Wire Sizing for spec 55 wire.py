@@ -18,13 +18,17 @@ import matplotlib.pyplot as plt
 
 
 # user input
-awg                            = 8# awg of wire
-voltage                        = 40.8 # voltage (V)
-current                        = 120 # current (A)
-cruise_current                 = 60
-length                         = 1  # length (m)
-time                           = 700 # time (s) - flight time total
-takeoff_time                   = 150 # time(s)
+awg                            = 20# awg of wire
+voltage                        = 50 # voltage (V)
+current                        = 8 # current (A)
+
+
+cruise_current                 = 8
+
+
+length                         = 10  # length (m)
+time                           = 1000 # time (s) - flight time total
+takeoff_time                   = 0 # time(s)
 # second_takeoff_time            = 15  
 max_allowable_temperature_rise = 60 # max allowable temperature rise of wire (K)
 
@@ -36,7 +40,7 @@ density                 = 8960          # Kg/m^3 - density of copper
 specific_heat_capacity  = 385           # J/Kg.K - specific heat capacity of copper
 resistivity             = 1.72*10**-8   # ohm*m  - resistivity of copper
 
-thermal_transmittance   = 40          #thermal transmittance (W)/((m^2)*(K))
+thermal_transmittance   = 40         #thermal transmittance (W)/((m^2)*(K))
 #note - a value of 25 is approx a 2ms^-1 ambient air flow of dry air - worst case
 #a value of 40 is what is used by RAYCHEM for internal wiring
 
@@ -66,10 +70,10 @@ def wire_area_cal(awg):
     return (0.127*(92**((36-awg)/39)))*(0.127*(92**((36-awg)/39)))*3.14159/4
 
 def resistance_of_wire_per_km_cal(resistivity , wire_area ):
-    return 10**9*(1.72*(10**(-8)))/wire_area
+    return 10**9*(resistivity)/wire_area
 
 def resistance_of_wire_cal(resistivity , wire_area , length):
-    return length*(10**9*(1.72*(10**(-8)))/wire_area)/1000
+    return length*(10**9*(resistivity)/wire_area)/1000
     
 def volume_of_wire_cal(length , wire_area):
     return length*wire_area/1000000
@@ -130,7 +134,7 @@ print("un-adjusted thermal dissapation" , thermal_dissapation)
 
 
 
-time_step = 0.1
+time_step = 0.01
 time_sum = 0
 wire_temp = 0
 i = 0
@@ -141,8 +145,8 @@ time_list = []
 while i < (time-time_step):
     if i >= takeoff_time:
        current = cruise_current
-   # if i >= second_takeoff_time:
-   #     current = takeoff_current
+##    if i >= second_takeoff_time:
+ ## //      current = takeoff_current
         
 #    if i <= 15:
 #        current = 235.3
@@ -168,7 +172,7 @@ while i < (time-time_step):
 #        current = 235.3
 #    if 590< i < 690:
 #        current = 0
-#        
+        
         
     power_loss = power_loss_cal(resistance_of_wire , current)
     thermal_dissapation = thermal_dissapation_cal(wire_surface_area , thermal_transmittance , wire_temp)
